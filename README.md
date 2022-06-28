@@ -1,6 +1,6 @@
 # Basic Sample Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+I'm trying to create a small video game with solidity and react. Following the examples of Buildspace (https://buildspace.so/p/create-turn-based-nft-game/lessons/setup-character-data-nft)
 
 Try running some of the following tasks:
 
