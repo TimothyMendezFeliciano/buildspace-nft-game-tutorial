@@ -13,7 +13,7 @@ import "./libraries/Base64.sol";
 
 contract DragonQuest is ERC721 {
 
-    struct BigBoss {
+    struct Dragon {
         string name;
         string imageURI;
         uint hp;
@@ -38,7 +38,9 @@ contract DragonQuest is ERC721 {
     CharacterAttributes[] defaultCharacters;
     mapping(uint256 => CharacterAttributes) public nftHolderAttributes;
     mapping(address => uint256) public nftHolders;
-    BigBoss public bigBoss;
+    Dragon public dragon;
+    event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
+    event AttackComplete(address sender, uint newBossHp, uint newPlayerHp);
 
     constructor(
         string[] memory characterNames,
@@ -53,7 +55,7 @@ contract DragonQuest is ERC721 {
         uint bossAttackDamage
     ) ERC721("Heroes", "HERO") {
 
-        bigBoss = BigBoss({
+        dragon = Dragon({
         name : bossName,
         imageURI : bossImageURI,
         hp : bossHp,
@@ -61,7 +63,7 @@ contract DragonQuest is ERC721 {
         attackDamage : bossAttackDamage
         });
 
-        console.log("Done initializing boss %s w/ HP %s, img %s", bigBoss.name, bigBoss.hp, bigBoss.imageURI);
+        console.log("Done initializing boss %s w/ HP %s, img %s", dragon.name, dragon.hp, dragon.imageURI);
 
         console.log("Prepare to destroy the Dark Lord.");
         for (uint i = 0; i < characterNames.length; i += 1) {
@@ -104,6 +106,7 @@ contract DragonQuest is ERC721 {
         nftHolders[msg.sender] = newItemId;
 
         _tokenIds.increment();
+        emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
     }
 
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
@@ -137,7 +140,7 @@ contract DragonQuest is ERC721 {
         uint nftTokenIdOfPlayer = nftHolders[msg.sender];
         CharacterAttributes storage player = nftHolderAttributes[nftTokenIdOfPlayer];
         console.log("\nPlayer w/ character %s about to attack. Has %s HP and %s AD", player.name, player.hp, player.attackDamage);
-        console.log("Boss %s has %s HP and %s AD", bigBoss.name, bigBoss.hp, bigBoss.attackDamage);
+        console.log("Boss %s has %s HP and %s AD", dragon.name, dragon.hp, dragon.attackDamage);
 
         require(
             player.hp > 0,
@@ -145,23 +148,42 @@ contract DragonQuest is ERC721 {
         );
 
         require(
-            bigBoss.hp > 0,
+            dragon.hp > 0,
             "Error: boss must have HP to attack character"
         );
 
-        if(bigBoss.hp < player.attackDamage) {
-            bigBoss.hp = 0;
+        if(dragon.hp < player.attackDamage) {
+            dragon.hp = 0;
         } else {
-            bigBoss.hp = bigBoss.hp - (player.attackDamage * player.wisdom);
+            dragon.hp = dragon.hp - (player.attackDamage * player.wisdom);
         }
 
-        if(player.hp < bigBoss.attackDamage) {
+        if(player.hp < dragon.attackDamage) {
             player.hp = 0;
         } else {
-            player.hp = player.hp - (bigBoss.attackDamage - player.defence);
+            player.hp = player.hp - (dragon.attackDamage - player.defence);
         }
 
-        console.log("Player attacked boss. New boss hp: %s", bigBoss.hp);
+        console.log("Player attacked boss. New boss hp: %s", dragon.hp);
         console.log("Boss attacked player. New player hp: %s\n", player.hp);
+        emit AttackComplete(msg.sender, dragon.hp, player.hp);
+    }
+
+    function checkIfUserHasNFT() public view returns (CharacterAttributes memory) {
+        uint256 userNftTokenId = nftHolders[msg.sender];
+        if(userNftTokenId > 0) {
+            return nftHolderAttributes[userNftTokenId];
+        } else {
+            CharacterAttributes memory emptyStruct;
+            return emptyStruct;
+        }
+    }
+
+    function getAllDefaultCharacters() public view returns (CharacterAttributes[] memory) {
+        return defaultCharacters;
+    }
+
+    function getDragon() public view returns (Dragon memory) {
+        return dragon;
     }
 }

@@ -21,18 +21,6 @@ const main = async () => {
     await gameContract.deployed()
 
     console.log('Contract deployed to: ', gameContract.address);
-
-    for (let i = 0; i < 4; i++) {
-        let transaction;
-        transaction = await gameContract.mintCharacterNFT(i);
-        await transaction.wait();
-        console.log(`Minted NFT #${i}`)
-
-        let bossTransaction;
-        bossTransaction = await gameContract.attackBoss();
-        await bossTransaction.wait();
-    }
-    console.log('All heroes minted, Big Boss as well.')
 }
 
 const runMain = async () => {
