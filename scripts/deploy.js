@@ -12,19 +12,27 @@ const main = async () => {
         [300, 200, 300, 200],
         [50, 20, 50, 30],
         [1, 3, 1, 2],
-        [50, 20, 50, 30]
+        [50, 20, 50, 30],
+        'Tonberry',
+        'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/563a768f-dc14-4c15-a3eb-6b8ed96ac390/d87lb3r-15d89164-da6d-4a1a-8bfc-d74ecddde0b2.png/v1/fill/w_530,h_475,strp/final_fantasy_tonberry_by_joeoiii_d87lb3r-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDc1IiwicGF0aCI6IlwvZlwvNTYzYTc2OGYtZGMxNC00YzE1LWEzZWItNmI4ZWQ5NmFjMzkwXC9kODdsYjNyLTE1ZDg5MTY0LWRhNmQtNGExYS04YmZjLWQ3NGVjZGRkZTBiMi5wbmciLCJ3aWR0aCI6Ijw9NTMwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.73Km86BEvx-uBVQcKOuR3vodtLFci2KIRWDqiHGXYhI',
+        1000,
+        100
     );
     await gameContract.deployed()
 
     console.log('Contract deployed to: ', gameContract.address);
 
-    for (let i = 0; i < characters.length; i++) {
+    for (let i = 0; i < 4; i++) {
         let transaction;
         transaction = await gameContract.mintCharacterNFT(i);
         await transaction.wait();
         console.log(`Minted NFT #${i}`)
+
+        let bossTransaction;
+        bossTransaction = await gameContract.attackBoss();
+        await bossTransaction.wait();
     }
-    console.log('All heroes minted')
+    console.log('All heroes minted, Big Boss as well.')
 }
 
 const runMain = async () => {
