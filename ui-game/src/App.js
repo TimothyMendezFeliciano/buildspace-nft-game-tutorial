@@ -3,6 +3,10 @@ import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 import DragonQuestDragon from './assets/DragonQuestDragon.gif';
 import SelectCharacter from "./Components/SelectCharacter";
+import {DragonQuestAddress} from "./Contracts/DragonQuestAddress";
+import {ethers} from 'ethers';
+import DragonQuestABI from "./Contracts/DragonQuestABI";
+import {transformCharacterData} from "./utils";
 // Constants
 const TWITTER_HANDLE = '_buildspace';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
@@ -54,9 +58,40 @@ const App = () => {
       setCurrentAccount(accounts[0]);
     }
 
+    const checkNetwork = async () => {
+        try {
+            if(window.ethereum.networkVersion !== '4') {
+                alert('Please connect to Rinkeby!')
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         checkWalletConnect()
     }, [])
+
+    useEffect(() => {
+        const fetchNFTMetadata = async () => {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const gameContract = new ethers.Contract(
+                DragonQuestAddress,
+                DragonQuestABI,
+                signer
+            )
+
+            const transaction = await gameContract.checkIfUserHasNFT();
+            if(transaction.name) {
+                setCharacterNFT(transformCharacterData(transaction));
+            }
+        };
+
+        if(currentAccount) {
+            fetchNFTMetadata()
+        }
+    }, [currentAccount])
 
     return (
         <div className="App">
