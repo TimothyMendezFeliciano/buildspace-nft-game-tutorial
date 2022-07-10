@@ -41,7 +41,7 @@ const renderLuminary = (luminary) => {
                 <div className={'player'}>
                     <div className={'image-content'}>
                         <h2>{luminary.name}</h2>
-                        <img src={luminary.imageURI}
+                        <img src={`https://cloudflare-ipfs.com/ipfs/${luminary.imageURI}`}
                              alt={`Hero ${luminary.name}`}
                         />
                         <div className={'health-bar'}>

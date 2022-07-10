@@ -122,7 +122,7 @@ contract DragonQuest is ERC721 {
             abi.encodePacked(
                 '{"name": "', charAttributes.name,
                 ' -- NFT #: ', Strings.toString(_tokenId),
-                '", "description": "Join the world of Dragon Quest Chainslayers", "image": "',
+                '", "description": "Join the world of Dragon Quest Chainslayers", "image": "ipfs://',
                 charAttributes.imageURI,
                 '", "attributes": [ { "trait_type": "Health Points", "value": ', strHp, ', "max_value":', strMaxHp, '}, { "trait_type": "Attack Damage", "value": ',
                 strAttackDamage, '}, {"trait_type": "Wisdom", "value": ', strWisdom, '}, {"trait_type": "Defence", "value": ', strDefence, '} ]}'

@@ -8,7 +8,7 @@ const Luminary = ({luminary}) => {
             <div className="name-container">
                 <p>{luminary.name}</p>
             </div>
-            <img src={luminary.imageURI} alt={luminary.name}/>
+            <img src={`https://cloudflare-ipfs.com/ipfs/${luminary.imageURI}`} alt={luminary.name}/>
             <button
                 type="button"
                 className="character-mint-button"
