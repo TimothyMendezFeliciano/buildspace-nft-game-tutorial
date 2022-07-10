@@ -7,6 +7,9 @@ import {DragonQuestAddress} from "./Contracts/DragonQuestAddress";
 import {ethers} from 'ethers';
 import DragonQuestABI from "./Contracts/DragonQuestABI";
 import {transformCharacterData} from "./utils";
+import Luminary from "./Components/Luminary";
+import Arena from "./Components/Arena";
+import LoadingIndicator from "./Components/LoadingIndicator";
 // Constants
 const TWITTER_HANDLE = '_buildspace';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
@@ -15,6 +18,7 @@ const App = () => {
 
     const [currentAccount, setCurrentAccount] = useState(null)
     const [characterNFT, setCharacterNFT] = useState(null)
+    const [isLoading, setIsLoading] = useState()
 
     const checkWalletConnect = async () => {
         const {ethereum} = window;
@@ -25,10 +29,15 @@ const App = () => {
                 setCurrentAccount(account);
             }
         }
+
+        setIsLoading(false)
         return !!ethereum;
     }
 
     const renderContent = () => {
+        if(isLoading) {
+            return <LoadingIndicator/>
+        }
         if(!currentAccount) {
             return (
                 <div className="connect-wallet-container">
@@ -38,6 +47,7 @@ const App = () => {
                     />
                     <button
                         className={'cta-button connect-wallet-button'}
+                        onClick={()=>connectWalletAction()}
                     >
                         Connect Wallet
                     </button>
@@ -45,6 +55,8 @@ const App = () => {
             )
         } else if (currentAccount && !characterNFT) {
             return <SelectCharacter setCharacterNFT={setCharacterNFT} />
+        } else if (currentAccount && characterNFT) {
+            return <Arena luminary={characterNFT} setLuminary={setCharacterNFT} currentAccount={currentAccount}/>
         }
     };
 
@@ -69,7 +81,9 @@ const App = () => {
     }
 
     useEffect(() => {
+        setIsLoading(true)
         checkWalletConnect()
+        checkNetwork()
     }, [])
 
     useEffect(() => {
@@ -86,6 +100,7 @@ const App = () => {
             if(transaction.name) {
                 setCharacterNFT(transformCharacterData(transaction));
             }
+            setIsLoading(false)
         };
 
         if(currentAccount) {
@@ -98,7 +113,7 @@ const App = () => {
             <div className="container">
                 <div className="header-container">
                     <p className="header gradient-text">⚔️Dragon Quest Dracovian Boss ⚔️</p>
-                    <p className="sub-text">Inspired by the Dragon Quest video games.</p>
+                    <p className="sub-text">Inspired by the Dragon Quest/Final Fantasy video games.</p>
                     {renderContent()}
                 </div>
                 <div className="footer-container">

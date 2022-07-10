@@ -1,3 +1,13 @@
+export const transformDracovianData = (dracovianData) => {
+    return {
+        name: dracovianData.name,
+        imageURI: dracovianData.imageURI,
+        hp: dracovianData.hp.toNumber(),
+        maxHp: dracovianData.maxHp.toNumber(),
+        attackDamage: dracovianData.attackDamage.toNumber()
+    }
+}
+
 export const transformCharacterData = (characterData) => {
     return {
         name: characterData.name,
